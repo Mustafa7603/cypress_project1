@@ -74,27 +74,41 @@ describe("Project2", () => {
     cy.get("#confirmation_message").should("be.visible");
   });
 
-  it("Test Case 07 - Validate the invalid login with the empty credentials", () => {
+  it("Test Case 07 - Validate the invalid login with empty credentials", () => {
     cy.get("#login_btn").click();
-    cy.get("#error_message")
-      .should("be.visible")
-      .and("have.text", "Invalid Username entered!");
+    cy.get("#error_message").should("have.text", "Invalid Username entered!");
   });
 
-  it("Test Case 08 - Validate the invalid login with the wrong username", () => {
-    cy.get("#username").type("John");
-    cy.get("#password").type("Test1234");
+  const loginInfo = (username, password) => {
+    cy.get("#username").type(username);
+    cy.get("#password").type(password);
     cy.get("#login_btn").click();
-    cy.get("#error_message")
-      .should("be.visible")
-      .and("have.text", "Invalid Username entered!");
-  });
-  it("Test Case 10 - Validate the invalid login with the wrong username and password", () => {
-    cy.get("#username").type("John");
-    cy.get("#password").type("1234");
-    cy.get("#login_btn").click();
-    cy.get("#error_message")
-      .should("be.visible")
-      .and("have.text", "Invalid Username entered!");
+  };
+
+  const info = [
+    {
+      case: "Validate the invalid login with the wrong username",
+      username: "John",
+      password: "Test1234",
+      result: "Invalid Username entered!",
+    },
+    {
+      case: "Validate the invalid login with the wrong password",
+      username: "TechGlobal",
+      password: "1234",
+      result: "Invalid Password entered!",
+    },
+    {
+      case: "Validate the invalid login with the wrong username and password",
+      username: "John",
+      password: "1234",
+      result: "Invalid Username entered!",
+    },
+  ];
+  info.forEach((el, index) => {
+    it(`Test Case ${index === 2 ? "" : 0}${index + 8} - ${el.case}`, () => {
+      loginInfo(el.username, el.password);
+      cy.get("#error_message").should("have.text", `${el.result}`);
+    });
   });
 });
